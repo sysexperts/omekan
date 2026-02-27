@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Omekan\Service;
 
 use Omekan\Repository\UserRepository;
+use Omekan\Repository\OrganizerRepository;
 
 class AuthService
 {
     private UserRepository $userRepository;
+    private OrganizerRepository $organizerRepository;
 
     public function __construct()
     {
         $this->userRepository = new UserRepository();
+        $this->organizerRepository = new OrganizerRepository();
     }
 
     public function login(string $email, string $password): ?array
@@ -32,7 +35,7 @@ class AuthService
         return $user->toArray();
     }
 
-    public function register(string $name, string $email, string $password): ?array
+    public function register(string $name, string $email, string $password, ?string $website = null): ?array
     {
         if ($this->userRepository->findByEmail($email)) {
             return null;
@@ -44,6 +47,10 @@ class AuthService
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
         
         $userId = $this->userRepository->create($name, $email, $passwordHash, $role);
+        
+        if ($role === 'organizer') {
+            $this->organizerRepository->create($userId, $name, $website);
+        }
         
         $user = $this->userRepository->findByEmail($email);
         

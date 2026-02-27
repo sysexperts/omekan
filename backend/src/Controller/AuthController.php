@@ -59,7 +59,8 @@ class AuthController
             return;
         }
 
-        $user = $this->authService->register($data['name'], $data['email'], $data['password']);
+        $website = $data['website'] ?? null;
+        $user = $this->authService->register($data['name'], $data['email'], $data['password'], $website);
         
         if ($user === null) {
             http_response_code(409);

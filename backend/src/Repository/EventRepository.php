@@ -17,6 +17,18 @@ class EventRepository
         $this->db = Connection::getInstance();
     }
 
+    public function create(int $organizerId, string $slug, ?string $affiliateUrl = null): int
+    {
+        $stmt = $this->db->prepare(
+            'INSERT INTO events (organizer_id, slug, affiliate_url, is_promoted, hero_video_path) 
+             VALUES (?, ?, ?, 0, NULL)'
+        );
+        
+        $stmt->execute([$organizerId, $slug, $affiliateUrl]);
+        
+        return (int) $this->db->lastInsertId();
+    }
+
     public function findAll(): array
     {
         $stmt = $this->db->prepare(

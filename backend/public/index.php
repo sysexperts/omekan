@@ -41,6 +41,12 @@ if ($requestMethod === 'POST' && $requestUri === '/api/register') {
     exit;
 }
 
+if ($requestMethod === 'POST' && $requestUri === '/api/events') {
+    $controller = new \Omekan\Controller\EventController();
+    $controller->create();
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',
