@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omekan - Event Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Omekan</h1>
+            <nav>
+                <a href="/">Events</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero-slider" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Promoted Events</h2>
+                    <div id="hero-slides"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="filters" class="filters">
+            <div class="container">
+                <div class="filter-group">
+                    <label for="filter-community">Community</label>
+                    <select id="filter-community">
+                        <option value="">Alle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-category">Kategorie</label>
+                    <select id="filter-category">
+                        <option value="">Alle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-date">Datum</label>
+                    <input type="date" id="filter-date">
+                </div>
+            </div>
+        </section>
+
+        <section id="events" class="events">
+            <div class="container">
+                <h2>Events</h2>
+                <div id="event-list" class="event-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Omekan</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
