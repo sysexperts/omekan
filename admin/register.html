@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omekan Admin - Login</title>
+    <title>Omekan Admin - Registrierung</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body class="login-page">
     <div class="login-container">
         <div class="login-box">
             <h1>Omekan Admin</h1>
-            <form id="login-form">
+            <p style="text-align: center; margin-bottom: 1rem; color: #7f8c8d;">
+                Erster User wird automatisch Admin
+            </p>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
                 <div class="form-group">
                     <label for="email">E-Mail</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Passwort</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" required minlength="6">
                 </div>
-                <button type="submit" class="btn-primary">Login</button>
+                <button type="submit" class="btn-primary">Registrieren</button>
             </form>
             <p style="text-align: center; margin-top: 1rem;">
-                <a href="register.html">Noch kein Account? Registrieren</a>
+                <a href="login.html">Bereits registriert? Login</a>
             </p>
         </div>
     </div>
-    <script src="js/login.js"></script>
+    <script src="js/register.js"></script>
 </body>
 </html>

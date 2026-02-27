@@ -29,6 +29,18 @@ if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $req
     exit;
 }
 
+if ($requestMethod === 'POST' && $requestUri === '/api/login') {
+    $controller = new \Omekan\Controller\AuthController();
+    $controller->login();
+    exit;
+}
+
+if ($requestMethod === 'POST' && $requestUri === '/api/register') {
+    $controller = new \Omekan\Controller\AuthController();
+    $controller->register();
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',
