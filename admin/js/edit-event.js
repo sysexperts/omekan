@@ -1,9 +1,10 @@
 const API_BASE_URL = 'http://localhost/api';
 
 let occurrenceCounter = 0;
+let eventId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!initAdminSidebar('create-event')) return;
+    if (!initAdminSidebar('events')) return;
 
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
@@ -12,9 +13,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Event-ID aus URL holen
+    const urlParams = new URLSearchParams(window.location.search);
+    eventId = urlParams.get('id');
+    
+    if (!eventId) {
+        alert('Keine Event-ID angegeben!');
+        window.location.href = 'events.html';
+        return;
+    }
+
     await loadCommunities();
     await loadCategories();
     await loadArtists();
+    await loadEventData(eventId);
 
     document.getElementById('event-form').addEventListener('submit', handleSubmit);
     
@@ -27,6 +39,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Live-Vorschau Event Listener
     setupLivePreview();
 });
+
+async function loadEventData(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${id}`);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.data) {
+            fillFormWithEventData(data.data);
+        } else {
+            alert('Event nicht gefunden!');
+            window.location.href = 'events.html';
+        }
+    } catch (error) {
+        console.error('Error loading event:', error);
+        alert('Fehler beim Laden des Events');
+    }
+}
+
+function fillFormWithEventData(event) {
+    // Basis-Felder
+    document.getElementById('slug').value = event.slug || '';
+    document.getElementById('title').value = event.title || '';
+    document.getElementById('location_name').value = event.location_name || '';
+    document.getElementById('description').value = event.description || '';
+    document.getElementById('affiliate_url').value = event.affiliate_url || '';
+    document.getElementById('hero_video_path').value = event.hero_video_path || '';
+    
+    // Promoted Checkbox
+    const promotedCheckbox = document.getElementById('is_promoted');
+    if (promotedCheckbox) {
+        promotedCheckbox.checked = event.is_promoted || false;
+        if (event.is_promoted) {
+            document.getElementById('hero-video-group').style.display = 'block';
+        }
+    }
+    
+    // Communities
+    if (event.communities && event.communities.length > 0) {
+        event.communities.forEach(community => {
+            const checkbox = document.querySelector(`input[name="communities"][value="${community.id}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
+    // Categories
+    if (event.categories && event.categories.length > 0) {
+        event.categories.forEach(category => {
+            const checkbox = document.querySelector(`input[name="categories"][value="${category.id}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
+    // Artists
+    if (event.artists && event.artists.length > 0) {
+        event.artists.forEach(artist => {
+            const checkbox = document.querySelector(`input[name="artists"][value="${artist.id}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
+    // Bild-Vorschau
+    if (event.image_path) {
+        document.getElementById('preview-image').innerHTML = `<img src="${event.image_path}" alt="Event Bild" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">`;
+    }
+    
+    // Vorschau aktualisieren
+    updatePreview();
+}
 
 function setupLivePreview() {
     // Alle Formular-Felder überwachen
