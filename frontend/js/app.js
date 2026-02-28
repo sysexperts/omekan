@@ -35,6 +35,8 @@ function displayEvents(events) {
             cardHTML += `<video src="${event.hero_video_path}" autoplay muted loop class="event-hero-video"></video>`;
         } else if (event.image_path) {
             cardHTML += `<img src="${event.image_path}" alt="${event.title}" class="event-image">`;
+        } else {
+            cardHTML += `<div class="event-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🎉</div>`;
         }
         
         cardHTML += `
