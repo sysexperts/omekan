@@ -232,4 +232,93 @@ class EventRepositoryNew
         
         $stmt->execute([$eventId, $categoryId]);
     }
+
+    public function update(int $eventId, string $slug, ?string $affiliateUrl, bool $isPromoted, ?string $heroVideoPath, ?string $imagePath): void
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE events 
+             SET slug = ?, affiliate_url = ?, is_promoted = ?, hero_video_path = ?, image_path = ?
+             WHERE id = ?'
+        );
+        
+        $stmt->execute([$slug, $affiliateUrl, $isPromoted ? 1 : 0, $heroVideoPath, $imagePath, $eventId]);
+    }
+
+    public function updateTranslation(int $eventId, string $language, string $title, ?string $description, ?string $locationName): void
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE event_translations 
+             SET title = ?, description = ?, location_name = ?
+             WHERE event_id = ? AND language = ?'
+        );
+        
+        $stmt->execute([$title, $description, $locationName, $eventId, $language]);
+    }
+
+    public function updateCommunities(int $eventId, array $communityIds): void
+    {
+        $stmt = $this->db->prepare('DELETE FROM event_communities WHERE event_id = ?');
+        $stmt->execute([$eventId]);
+        
+        if (!empty($communityIds)) {
+            $stmt = $this->db->prepare('INSERT INTO event_communities (event_id, community_id) VALUES (?, ?)');
+            foreach ($communityIds as $communityId) {
+                $stmt->execute([$eventId, (int)$communityId]);
+            }
+        }
+    }
+
+    public function updateCategories(int $eventId, array $categoryIds): void
+    {
+        $stmt = $this->db->prepare('DELETE FROM event_categories WHERE event_id = ?');
+        $stmt->execute([$eventId]);
+        
+        if (!empty($categoryIds)) {
+            $stmt = $this->db->prepare('INSERT INTO event_categories (event_id, category_id) VALUES (?, ?)');
+            foreach ($categoryIds as $categoryId) {
+                $stmt->execute([$eventId, (int)$categoryId]);
+            }
+        }
+    }
+
+    public function updateArtists(int $eventId, array $artistIds): void
+    {
+        $stmt = $this->db->prepare('DELETE FROM event_artists WHERE event_id = ?');
+        $stmt->execute([$eventId]);
+        
+        if (!empty($artistIds)) {
+            $stmt = $this->db->prepare('INSERT INTO event_artists (event_id, artist_id) VALUES (?, ?)');
+            foreach ($artistIds as $artistId) {
+                $stmt->execute([$eventId, (int)$artistId]);
+            }
+        }
+    }
+
+    public function delete(int $eventId): bool
+    {
+        try {
+            $stmt = $this->db->prepare('DELETE FROM event_communities WHERE event_id = ?');
+            $stmt->execute([$eventId]);
+            
+            $stmt = $this->db->prepare('DELETE FROM event_categories WHERE event_id = ?');
+            $stmt->execute([$eventId]);
+            
+            $stmt = $this->db->prepare('DELETE FROM event_artists WHERE event_id = ?');
+            $stmt->execute([$eventId]);
+            
+            $stmt = $this->db->prepare('DELETE FROM event_occurrences WHERE event_id = ?');
+            $stmt->execute([$eventId]);
+            
+            $stmt = $this->db->prepare('DELETE FROM event_translations WHERE event_id = ?');
+            $stmt->execute([$eventId]);
+            
+            $stmt = $this->db->prepare('DELETE FROM events WHERE id = ?');
+            $stmt->execute([$eventId]);
+            
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            error_log("Error deleting event: " . $e->getMessage());
+            return false;
+        }
+    }
 }

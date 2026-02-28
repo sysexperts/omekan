@@ -39,6 +39,20 @@ if ($requestMethod === 'GET' && $requestUri === '/api/events') {
     exit;
 }
 
+// Event Update (PUT /api/events/{id})
+if ($requestMethod === 'PUT' && preg_match('#^/api/events/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->update((int)$matches[1]);
+    exit;
+}
+
+// Event Delete (DELETE /api/events/{id})
+if ($requestMethod === 'DELETE' && preg_match('#^/api/events/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->delete((int)$matches[1]);
+    exit;
+}
+
 // Event-Detail-Route (Slug) - MUSS nach allen spezifischen /api/events/* Routes kommen
 if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $requestUri, $matches)) {
     error_log("Matched event slug pattern: " . $matches[1]);

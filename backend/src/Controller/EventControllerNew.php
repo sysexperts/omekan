@@ -93,4 +93,62 @@ class EventControllerNew
             'message' => 'Event created successfully'
         ]);
     }
+
+    public function update(int $id): void
+    {
+        header('Content-Type: application/json');
+        
+        $rawInput = file_get_contents('php://input');
+        $data = json_decode($rawInput, true);
+        
+        if ($data === null) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid JSON data'
+            ]);
+            return;
+        }
+        
+        $data['id'] = $id;
+        $event = $this->eventService->updateEvent($data);
+        
+        if ($event === null) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to update event'
+            ]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'status' => 'success',
+            'data' => $event,
+            'message' => 'Event updated successfully'
+        ]);
+    }
+
+    public function delete(int $id): void
+    {
+        header('Content-Type: application/json');
+        
+        $success = $this->eventService->deleteEvent($id);
+        
+        if (!$success) {
+            http_response_code(404);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Event not found or could not be deleted'
+            ]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Event deleted successfully'
+        ]);
+    }
 }

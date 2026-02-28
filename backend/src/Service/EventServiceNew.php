@@ -90,4 +90,54 @@ class EventServiceNew
 
         return $this->getEventBySlug($data['slug']);
     }
+
+    public function updateEvent(array $data): ?array
+    {
+        if (!isset($data['id'], $data['slug'], $data['title'], $data['location_name'])) {
+            return null;
+        }
+
+        $eventId = (int)$data['id'];
+
+        // Event-Basis-Daten aktualisieren
+        $this->eventRepository->update(
+            eventId: $eventId,
+            slug: $data['slug'],
+            affiliateUrl: $data['affiliate_url'] ?? null,
+            isPromoted: (bool)($data['is_promoted'] ?? false),
+            heroVideoPath: $data['hero_video_path'] ?? null,
+            imagePath: $data['image_path'] ?? null
+        );
+
+        // Übersetzung aktualisieren
+        $this->eventRepository->updateTranslation(
+            eventId: $eventId,
+            language: $data['language'] ?? 'de',
+            title: $data['title'],
+            description: $data['description'] ?? null,
+            locationName: $data['location_name']
+        );
+
+        // Communities aktualisieren
+        if (isset($data['communities'])) {
+            $this->eventRepository->updateCommunities($eventId, $data['communities']);
+        }
+
+        // Categories aktualisieren
+        if (isset($data['categories'])) {
+            $this->eventRepository->updateCategories($eventId, $data['categories']);
+        }
+
+        // Artists aktualisieren
+        if (isset($data['artists'])) {
+            $this->eventRepository->updateArtists($eventId, $data['artists']);
+        }
+
+        return $this->getEventBySlug($data['slug']);
+    }
+
+    public function deleteEvent(int $eventId): bool
+    {
+        return $this->eventRepository->delete($eventId);
+    }
 }

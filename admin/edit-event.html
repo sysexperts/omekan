@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event erstellen - Omekan Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/create-event.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar"></aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Event erstellen</h1>
+            </header>
+
+            <div class="create-event-container">
+                <!-- Formular Links -->
+                <div>
+                    <form id="event-form">
+                        <!-- Basis-Informationen -->
+                        <div class="form-section">
+                            <h3>📋 Basis-Informationen</h3>
+                            <div class="form-grid full-width">
+                                <div class="form-group">
+                                    <label for="title">Titel *</label>
+                                    <input type="text" id="title" name="title" required placeholder="z.B. Summer Festival 2026">
+                                </div>
+                            </div>
+                            <div class="form-grid full-width">
+                                <div class="form-group">
+                                    <label for="description">Beschreibung</label>
+                                    <textarea id="description" name="description" rows="4" placeholder="Beschreibe dein Event..."></textarea>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="location_name">Ort *</label>
+                                    <input type="text" id="location_name" name="location_name" placeholder="z.B. Berlin, Messe">
+                                </div>
+                                <div class="form-group">
+                                    <label for="affiliate_url">Ticket-Link</label>
+                                    <input type="url" id="affiliate_url" name="affiliate_url" placeholder="https://...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Datum & Zeit -->
+                        <div class="form-section">
+                            <h3>📅 Datum & Zeit</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="start_date">Start-Datum *</label>
+                                    <input type="date" id="start_date" name="start_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="start_time">Start-Uhrzeit *</label>
+                                    <input type="time" id="start_time" name="start_time" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_date">End-Datum</label>
+                                    <input type="date" id="end_date" name="end_date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_time">End-Uhrzeit</label>
+                                    <input type="time" id="end_time" name="end_time">
+                                </div>
+                            </div>
+                            <div id="occurrences-list"></div>
+                            <button type="button" class="btn-add-occurrence" onclick="addOccurrence()">+ Weiteren Termin hinzufügen</button>
+                        </div>
+
+                        <!-- Medien -->
+                        <div class="form-section">
+                            <h3>🎨 Medien</h3>
+                            <div class="form-grid full-width">
+                                <div class="form-group">
+                                    <label for="image_file">Event-Bild hochladen</label>
+                                    <input type="file" id="image_file" name="image_file" accept="image/*">
+                                    <small style="color: #7f8c8d; font-size: 0.85rem;">Max. 10MB - JPG, PNG, GIF, WEBP</small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="is_promoted" name="is_promoted">
+                                    Event promoten (Hero-Video anzeigen)
+                                </label>
+                            </div>
+                            <div class="form-group" id="hero-video-group" style="display: none;">
+                                <label for="hero_video_path">Hero-Video URL</label>
+                                <input type="url" id="hero_video_path" name="hero_video_path" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <!-- Kategorisierung -->
+                        <div class="form-section">
+                            <h3>🏷️ Kategorisierung</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Künstler</label>
+                                    <select id="artists-select" multiple style="height: 120px;"></select>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label>Communities</label>
+                                        <div id="communities-list" class="checkbox-group"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kategorien</label>
+                                        <div id="categories-list" class="checkbox-group"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Event erstellen</button>
+                    </form>
+                </div>
+
+                <!-- Live-Vorschau Rechts -->
+                <div class="preview-section">
+                    <div class="preview-card">
+                        <div class="preview-header">Live-Vorschau</div>
+                        <div class="preview-content">
+                            <div class="preview-image" id="preview-image">
+                                <span>Kein Bild</span>
+                            </div>
+                            <div class="preview-title" id="preview-title">Event-Titel</div>
+                            <div class="preview-location" id="preview-location">📍 Ort</div>
+                            <div class="preview-date" id="preview-date">📅 Datum</div>
+                            <div class="preview-tags" id="preview-tags"></div>
+                            <div class="preview-description" id="preview-description"></div>
+                            <div class="preview-occurrences" id="preview-occurrences" style="display: none;">
+                                <h4>Weitere Termine:</h4>
+                                <div id="preview-occurrences-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/sidebar.js"></script>
+    <script src="js/edit-event.js"></script>
+</body>
+</html>
