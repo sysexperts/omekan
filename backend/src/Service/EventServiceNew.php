@@ -29,12 +29,12 @@ class EventServiceNew
 
     public function createEvent(array $data): ?array
     {
-        if (!isset($data['organizer_id'], $data['slug'], $data['title'], $data['location_name'])) {
+        if (!isset($data['slug'], $data['title'], $data['location_name'])) {
             return null;
         }
 
         $eventId = $this->eventRepository->create(
-            organizerId: (int) $data['organizer_id'],
+            organizerId: (int) ($data['organizer_id'] ?? 1),
             slug: $data['slug'],
             affiliateUrl: $data['affiliate_url'] ?? null,
             isPromoted: (bool) ($data['is_promoted'] ?? false),

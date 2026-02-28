@@ -143,6 +143,12 @@ if ($requestMethod === 'POST' && $requestUri === '/api/artists') {
     exit;
 }
 
+if ($requestMethod === 'POST' && $requestUri === '/api/upload/event-image') {
+    $controller = new \Omekan\Controller\UploadController();
+    $controller->uploadEventImage();
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',

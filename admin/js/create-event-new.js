@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function setupLivePreview() {
     // Alle Formular-Felder überwachen
-    const fields = ['title', 'description', 'location_name', 'start_date', 'start_time', 'end_date', 'end_time', 'image_path', 'hero_video_path'];
+    const fields = ['title', 'description', 'location_name', 'start_date', 'start_time', 'end_date', 'end_time', 'hero_video_path'];
     
     fields.forEach(fieldId => {
         const element = document.getElementById(fieldId);
@@ -40,8 +40,26 @@ function setupLivePreview() {
         }
     });
     
+    // File-Upload überwachen
+    const imageFile = document.getElementById('image_file');
+    if (imageFile) {
+        imageFile.addEventListener('change', handleImagePreview);
+    }
+    
     // Checkboxen überwachen
     document.getElementById('artists-select').addEventListener('change', updatePreview);
+}
+
+function handleImagePreview(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const previewImage = document.getElementById('preview-image');
+            previewImage.innerHTML = `<img src="${event.target.result}" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">`;
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 function updatePreview() {
@@ -91,18 +109,14 @@ function updatePreview() {
     }
     
     // Bild/Video
-    const imagePath = document.getElementById('image_path').value;
     const isPromoted = document.getElementById('is_promoted').checked;
     const videoPath = document.getElementById('hero_video_path').value;
     const previewImage = document.getElementById('preview-image');
     
     if (isPromoted && videoPath) {
         previewImage.innerHTML = `<video src="${videoPath}" autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>`;
-    } else if (imagePath) {
-        previewImage.innerHTML = `<img src="${imagePath}" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">`;
-    } else {
-        previewImage.innerHTML = '<span>Kein Bild</span>';
     }
+    // Bild-Vorschau wird von handleImagePreview gesetzt
     
     // Tags (Communities, Categories, Artists)
     updatePreviewTags();
@@ -305,6 +319,36 @@ async function handleSubmit(e) {
     const user = JSON.parse(localStorage.getItem('user'));
     const formData = new FormData(e.target);
     
+    // 1. Bild hochladen falls vorhanden
+    let imagePath = null;
+    const imageFile = document.getElementById('image_file').files[0];
+    
+    if (imageFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', imageFile);
+        
+        try {
+            const uploadResponse = await fetch(`${API_BASE_URL}/upload/event-image`, {
+                method: 'POST',
+                body: uploadFormData
+            });
+            
+            const uploadData = await uploadResponse.json();
+            
+            if (uploadResponse.ok) {
+                imagePath = uploadData.data.path;
+            } else {
+                alert('Fehler beim Hochladen des Bildes: ' + uploadData.message);
+                return;
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Fehler beim Hochladen des Bildes');
+            return;
+        }
+    }
+    
+    // 2. Event-Daten sammeln
     const communityIds = Array.from(document.querySelectorAll('input[name="community_ids"]:checked'))
         .map(cb => parseInt(cb.value));
     
@@ -329,7 +373,7 @@ async function handleSubmit(e) {
         .replace(/^-|-$/g, '');
     
     const eventData = {
-        organizer_id: user.organizer_id || 1,
+        organizer_id: 1, // Fallback auf 1
         slug: slug,
         title: title,
         description: formData.get('description') || null,
@@ -337,7 +381,7 @@ async function handleSubmit(e) {
         start_datetime: `${startDate} ${startTime}:00`,
         end_datetime: `${endDate} ${endTime}:00`,
         affiliate_url: formData.get('affiliate_url') || null,
-        image_path: formData.get('image_path') || null,
+        image_path: imagePath,
         is_promoted: document.getElementById('is_promoted').checked,
         hero_video_path: document.getElementById('is_promoted').checked ? formData.get('hero_video_path') : null,
         artist_ids: artistIds,
@@ -346,7 +390,7 @@ async function handleSubmit(e) {
         language: 'de'
     };
     
-    // Zusätzliche Occurrences sammeln
+    // 3. Zusätzliche Occurrences sammeln
     const additionalOccurrences = [];
     for (let i = 1; i <= occurrenceCounter; i++) {
         const occStartDate = formData.get(`occ_start_date_${i}`);
@@ -366,6 +410,7 @@ async function handleSubmit(e) {
         eventData.additional_occurrences = additionalOccurrences;
     }
 
+    // 4. Event erstellen
     try {
         const response = await fetch(`${API_BASE_URL}/events/create`, {
             method: 'POST',
@@ -385,6 +430,6 @@ async function handleSubmit(e) {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Verbindungsfehler');
+        alert('Verbindungsfehler: ' + error.message);
     }
 }
