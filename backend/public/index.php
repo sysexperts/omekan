@@ -17,14 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
+if ($requestMethod === 'GET' && $requestUri === '/api/events/list') {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->index();
+    exit;
+}
+
 if ($requestMethod === 'GET' && $requestUri === '/api/events') {
     $controller = new \Omekan\Controller\EventController();
     $controller->index();
     exit;
 }
 
-if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $requestUri, $matches)) {
-    $controller = new \Omekan\Controller\EventController();
+if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $requestUri, $matches) && $matches[1] !== 'list' && $matches[1] !== 'create') {
+    $controller = new \Omekan\Controller\EventControllerNew();
     $controller->show($matches[1]);
     exit;
 }
@@ -110,18 +116,6 @@ if ($requestMethod === 'PUT' && preg_match('#^/api/categories/(\d+)$#', $request
 if ($requestMethod === 'DELETE' && preg_match('#^/api/categories/(\d+)$#', $requestUri, $matches)) {
     $controller = new \Omekan\Controller\CategoryController();
     $controller->delete((int) $matches[1]);
-    exit;
-}
-
-if ($requestMethod === 'GET' && $requestUri === '/api/events/list') {
-    $controller = new \Omekan\Controller\EventControllerNew();
-    $controller->index();
-    exit;
-}
-
-if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9-]+)$#', $requestUri, $matches)) {
-    $controller = new \Omekan\Controller\EventControllerNew();
-    $controller->show($matches[1]);
     exit;
 }
 
