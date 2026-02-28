@@ -1,6 +1,6 @@
 const API_BASE_URL = 'http://localhost/api';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
     if (!user) {
@@ -15,7 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Admin dashboard loaded for:', user.name);
+    
+    await loadStats();
 });
+
+async function loadStats() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events`);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            document.getElementById('total-events').textContent = data.data.length;
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
 
 function logout() {
     localStorage.removeItem('user');

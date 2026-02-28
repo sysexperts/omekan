@@ -111,3 +111,7 @@ async function handleSubmit(e) {
         alert('Verbindungsfehler');
     }
 }
+
+function logout() {
+    localStorage.removeItem('user');
+}

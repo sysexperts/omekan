@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'login.html';
         return;
     }
+    
+    if (user.role !== 'admin') {
+        alert('Nur Admins haben Zugriff auf diesen Bereich');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    document.getElementById('user-name').textContent = user.name;
 
     await loadEvents();
 });
@@ -51,4 +59,8 @@ function displayEvents(events) {
             </tr>
         `).join('') +
         '</tbody></table>';
+}
+
+function logout() {
+    localStorage.removeItem('user');
 }
