@@ -58,27 +58,36 @@ async function loadEventData(id) {
 }
 
 function fillFormWithEventData(event) {
-    // Basis-Felder
-    document.getElementById('slug').value = event.slug || '';
-    document.getElementById('title').value = event.title || '';
-    document.getElementById('location_name').value = event.location_name || '';
-    document.getElementById('description').value = event.description || '';
-    document.getElementById('affiliate_url').value = event.affiliate_url || '';
-    document.getElementById('hero_video_path').value = event.hero_video_path || '';
+    // Basis-Felder (nur die, die existieren)
+    const titleField = document.getElementById('title');
+    if (titleField) titleField.value = event.title || '';
+    
+    const locationField = document.getElementById('location_name');
+    if (locationField) locationField.value = event.location_name || '';
+    
+    const descriptionField = document.getElementById('description');
+    if (descriptionField) descriptionField.value = event.description || '';
+    
+    const affiliateField = document.getElementById('affiliate_url');
+    if (affiliateField) affiliateField.value = event.affiliate_url || '';
+    
+    const heroVideoField = document.getElementById('hero_video_path');
+    if (heroVideoField) heroVideoField.value = event.hero_video_path || '';
     
     // Promoted Checkbox
     const promotedCheckbox = document.getElementById('is_promoted');
     if (promotedCheckbox) {
-        promotedCheckbox.checked = event.is_promoted || false;
-        if (event.is_promoted) {
-            document.getElementById('hero-video-group').style.display = 'block';
+        promotedCheckbox.checked = event.is_promoted == 1;
+        const heroVideoGroup = document.getElementById('hero-video-group');
+        if (heroVideoGroup) {
+            heroVideoGroup.style.display = event.is_promoted == 1 ? 'block' : 'none';
         }
     }
     
     // Communities
     if (event.communities && event.communities.length > 0) {
         event.communities.forEach(community => {
-            const checkbox = document.querySelector(`input[name="communities"][value="${community.id}"]`);
+            const checkbox = document.querySelector(`input[name="community_ids"][value="${community.id}"]`);
             if (checkbox) checkbox.checked = true;
         });
     }
@@ -86,26 +95,32 @@ function fillFormWithEventData(event) {
     // Categories
     if (event.categories && event.categories.length > 0) {
         event.categories.forEach(category => {
-            const checkbox = document.querySelector(`input[name="categories"][value="${category.id}"]`);
+            const checkbox = document.querySelector(`input[name="category_ids"][value="${category.id}"]`);
             if (checkbox) checkbox.checked = true;
         });
     }
     
     // Artists
     if (event.artists && event.artists.length > 0) {
-        event.artists.forEach(artist => {
-            const checkbox = document.querySelector(`input[name="artists"][value="${artist.id}"]`);
-            if (checkbox) checkbox.checked = true;
-        });
+        const artistsSelect = document.getElementById('artists-select');
+        if (artistsSelect) {
+            event.artists.forEach(artist => {
+                const option = artistsSelect.querySelector(`option[value="${artist.id}"]`);
+                if (option) option.selected = true;
+            });
+        }
     }
     
     // Bild-Vorschau
-    if (event.image_path) {
-        document.getElementById('preview-image').innerHTML = `<img src="${event.image_path}" alt="Event Bild" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">`;
+    const previewImage = document.getElementById('preview-image');
+    if (previewImage && event.image_path) {
+        previewImage.innerHTML = `<img src="${event.image_path}" alt="Event Bild" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">`;
     }
     
     // Vorschau aktualisieren
-    updatePreview();
+    if (typeof updatePreview === 'function') {
+        updatePreview();
+    }
 }
 
 function setupLivePreview() {
