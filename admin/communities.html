@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities - Omekan Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <h2>Omekan Admin</h2>
+            <p class="user-info" id="user-name"></p>
+            <nav>
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="users.html" class="nav-item">User-Verwaltung</a>
+                <a href="organizers.html" class="nav-item">Veranstalter</a>
+                <a href="events.html" class="nav-item">Alle Events</a>
+                <a href="create-event.html" class="nav-item">Event erstellen</a>
+                <a href="communities.html" class="nav-item active">Communities</a>
+                <a href="categories.html" class="nav-item">Kategorien</a>
+                <a href="login.html" class="nav-item" onclick="logout()">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Communities</h1>
+                <button class="btn-primary" onclick="showCreateModal()">Neue Community</button>
+            </header>
+
+            <div class="admin-section">
+                <div id="communities-list">Lade Daten...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal für Create/Edit -->
+    <div id="community-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
+            <h2 id="modal-title">Community erstellen</h2>
+            <form id="community-form">
+                <input type="hidden" id="community-id">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="slug">Slug *</label>
+                    <input type="text" id="slug" required>
+                </div>
+                <div class="form-group">
+                    <label for="flag_icon">Flaggen-Emoji (z.B. 🇹🇷)</label>
+                    <input type="text" id="flag_icon" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="preview_image">Vorschaubild URL</label>
+                    <input type="url" id="preview_image">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="is_active" checked>
+                        Aktiv
+                    </label>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn-primary">Speichern</button>
+                    <button type="button" class="btn-primary" onclick="closeModal()" style="background: #95a5a6;">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/communities.js"></script>
+</body>
+</html>

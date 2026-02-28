@@ -65,6 +65,30 @@ if ($requestMethod === 'GET' && $requestUri === '/api/admin/organizers') {
     exit;
 }
 
+if ($requestMethod === 'GET' && $requestUri === '/api/communities') {
+    $controller = new \Omekan\Controller\CommunityController();
+    $controller->index();
+    exit;
+}
+
+if ($requestMethod === 'POST' && $requestUri === '/api/communities') {
+    $controller = new \Omekan\Controller\CommunityController();
+    $controller->create();
+    exit;
+}
+
+if ($requestMethod === 'PUT' && preg_match('#^/api/communities/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\CommunityController();
+    $controller->update((int) $matches[1]);
+    exit;
+}
+
+if ($requestMethod === 'DELETE' && preg_match('#^/api/communities/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\CommunityController();
+    $controller->delete((int) $matches[1]);
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',
