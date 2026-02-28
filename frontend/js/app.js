@@ -10,6 +10,13 @@ async function loadEvents() {
         const data = await response.json();
         
         if (data.status === 'success' && data.data.length > 0) {
+            // Hero-Slider mit promoted Events
+            const promotedEvents = data.data.filter(e => e.is_promoted && e.hero_video_path);
+            if (promotedEvents.length > 0) {
+                displayHeroSlider(promotedEvents);
+            }
+            
+            // Alle Events anzeigen
             displayEvents(data.data);
         } else {
             document.getElementById('event-list').innerHTML = '<p>Keine Events verfügbar</p>';
@@ -17,6 +24,36 @@ async function loadEvents() {
     } catch (error) {
         console.error('Error loading events:', error);
         document.getElementById('event-list').innerHTML = '<p>Fehler beim Laden der Events</p>';
+    }
+}
+
+function displayHeroSlider(promotedEvents) {
+    const heroSlides = document.getElementById('hero-slides');
+    if (!heroSlides || promotedEvents.length === 0) return;
+    
+    let currentSlide = 0;
+    
+    function showSlide(index) {
+        const event = promotedEvents[index];
+        heroSlides.innerHTML = `
+            <div class="hero-slide" onclick="window.location.href='event-detail.html?slug=${event.slug}'">
+                <video src="${event.hero_video_path}" autoplay muted loop style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px;"></video>
+                <div style="margin-top: 1rem;">
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;">${event.title}</h3>
+                    <p style="color: rgba(255,255,255,0.9);">${event.location_name || ''}</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    showSlide(currentSlide);
+    
+    // Auto-rotate every 5 seconds
+    if (promotedEvents.length > 1) {
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % promotedEvents.length;
+            showSlide(currentSlide);
+        }, 5000);
     }
 }
 
