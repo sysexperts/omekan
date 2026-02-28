@@ -1,5 +1,5 @@
-// Globale Sidebar für alle Admin-Seiten
-function initAdminSidebar(activePage) {
+// Globale Sidebar für alle Admin-Seiten - WIRKLICH GLOBAL!
+async function initAdminSidebar(activePage) {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
     if (!user) {
@@ -13,16 +13,23 @@ function initAdminSidebar(activePage) {
         return false;
     }
     
-    // User-Name anzeigen
-    const userNameEl = document.getElementById('user-name');
-    if (userNameEl) {
-        userNameEl.textContent = user.name;
-    }
+    // Sidebar laden und befüllen
+    await loadSidebar(user.name, activePage);
+    
+    // SVG Icons hinzufügen
+    addSVGIcons();
+    
+    return true;
+}
+
+async function loadSidebar(userName, activePage) {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
     
     // Sidebar HTML
     const sidebarHTML = `
         <h2>Omekan Admin</h2>
-        <p class="user-info" id="user-name">${user.name}</p>
+        <p class="user-info">${userName}</p>
         <nav>
             <a href="dashboard.html" class="nav-item ${activePage === 'dashboard' ? 'active' : ''}">
                 <svg width="20" height="20" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;"><use href="#icon-dashboard"/></svg>
@@ -67,7 +74,12 @@ function initAdminSidebar(activePage) {
         </nav>
     `;
     
-    // SVG Icons
+    sidebar.innerHTML = sidebarHTML;
+}
+
+function addSVGIcons() {
+    if (document.getElementById('admin-svg-icons')) return;
+    
     const svgIcons = `
         <svg style="display: none;">
             <symbol id="icon-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
@@ -83,21 +95,10 @@ function initAdminSidebar(activePage) {
         </svg>
     `;
     
-    // Sidebar Element finden und befüllen
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-        sidebar.innerHTML = sidebarHTML;
-    }
-    
-    // SVG Icons hinzufügen
-    if (!document.getElementById('admin-svg-icons')) {
-        const div = document.createElement('div');
-        div.id = 'admin-svg-icons';
-        div.innerHTML = svgIcons;
-        document.body.appendChild(div);
-    }
-    
-    return true;
+    const div = document.createElement('div');
+    div.id = 'admin-svg-icons';
+    div.innerHTML = svgIcons;
+    document.body.appendChild(div);
 }
 
 function logout() {
