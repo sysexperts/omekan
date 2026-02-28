@@ -58,6 +58,18 @@ class EventServiceNew
             );
         }
 
+        if (isset($data['additional_occurrences']) && is_array($data['additional_occurrences'])) {
+            foreach ($data['additional_occurrences'] as $occurrence) {
+                if (isset($occurrence['start_datetime'], $occurrence['end_datetime'])) {
+                    $this->eventRepository->createOccurrence(
+                        eventId: $eventId,
+                        startDatetime: $occurrence['start_datetime'],
+                        endDatetime: $occurrence['end_datetime']
+                    );
+                }
+            }
+        }
+
         if (isset($data['artist_ids']) && is_array($data['artist_ids'])) {
             foreach ($data['artist_ids'] as $artistId) {
                 $this->eventRepository->linkArtist($eventId, (int) $artistId);

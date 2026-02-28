@@ -125,6 +125,24 @@ if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9-]+)$#', $requ
     exit;
 }
 
+if ($requestMethod === 'POST' && $requestUri === '/api/events/create') {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->create();
+    exit;
+}
+
+if ($requestMethod === 'GET' && $requestUri === '/api/artists') {
+    $controller = new \Omekan\Controller\ArtistController();
+    $controller->index();
+    exit;
+}
+
+if ($requestMethod === 'POST' && $requestUri === '/api/artists') {
+    $controller = new \Omekan\Controller\ArtistController();
+    $controller->create();
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Künstler-Verwaltung - Omekan Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar"></aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Künstler-Verwaltung</h1>
+                <button class="btn-primary" onclick="showCreateModal()">Neuer Künstler</button>
+            </header>
+
+            <div class="admin-section">
+                <div id="artists-list">Lade Daten...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+
+    <!-- Modal für Create -->
+    <div id="artist-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
+            <h2>Künstler erstellen</h2>
+            <form id="artist-form">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="spotify_id">Spotify ID</label>
+                    <input type="text" id="spotify_id">
+                </div>
+                <div class="form-group">
+                    <label for="image_path">Bild URL</label>
+                    <input type="url" id="image_path">
+                </div>
+                <div class="form-group">
+                    <label for="description">Beschreibung</label>
+                    <textarea id="description" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn-primary">Speichern</button>
+                    <button type="button" class="btn-primary" onclick="closeModal()" style="background: #95a5a6;">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/api';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!initAdminSidebar('artists')) return;
+            
+            await loadArtists();
+            
+            document.getElementById('artist-form').addEventListener('submit', handleSubmit);
+        });
+
+        async function loadArtists() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/artists`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayArtists(data.data);
+                } else {
+                    document.getElementById('artists-list').innerHTML = '<p>Fehler beim Laden</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('artists-list').innerHTML = '<p>Verbindungsfehler</p>';
+            }
+        }
+
+        function displayArtists(artists) {
+            const list = document.getElementById('artists-list');
+            
+            if (artists.length === 0) {
+                list.innerHTML = '<p>Keine Künstler gefunden</p>';
+                return;
+            }
+            
+            list.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Spotify ID</th>
+                            <th>Bild</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${artists.map(artist => `
+                            <tr>
+                                <td>${artist.id}</td>
+                                <td>${artist.name}</td>
+                                <td>${artist.spotify_id || '-'}</td>
+                                <td>${artist.image_path ? '<img src="' + artist.image_path + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function showCreateModal() {
+            document.getElementById('artist-form').reset();
+            document.getElementById('artist-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('artist-modal').style.display = 'none';
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const artistData = {
+                name: document.getElementById('name').value,
+                spotify_id: document.getElementById('spotify_id').value || null,
+                image_path: document.getElementById('image_path').value || null,
+                description: document.getElementById('description').value || null
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/artists`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(artistData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(data.message);
+                    closeModal();
+                    await loadArtists();
+                } else {
+                    alert(data.message || 'Fehler beim Speichern');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Verbindungsfehler');
+            }
+        }
+    </script>
+</body>
+</html>

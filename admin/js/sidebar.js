@@ -59,6 +59,10 @@ async function loadSidebar(userName, activePage) {
                 <svg width="20" height="20" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;"><use href="#icon-tag"/></svg>
                 Kategorien
             </a>
+            <a href="artists.html" class="nav-item ${activePage === 'artists' ? 'active' : ''}">
+                <svg width="20" height="20" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;"><use href="#icon-star"/></svg>
+                Künstler
+            </a>
             <a href="reviews.html" class="nav-item ${activePage === 'reviews' ? 'active' : ''}">
                 <svg width="20" height="20" fill="currentColor" style="margin-right: 0.5rem; vertical-align: middle;"><use href="#icon-star"/></svg>
                 Reviews moderieren

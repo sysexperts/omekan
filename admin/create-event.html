@@ -58,6 +58,30 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="image_path">Event-Bild URL</label>
+                        <input type="url" id="image_path" name="image_path" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="is_promoted" name="is_promoted">
+                            Event promoten (Hero-Video anzeigen)
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="hero-video-group" style="display: none;">
+                        <label for="hero_video_path">Hero-Video URL</label>
+                        <input type="url" id="hero_video_path" name="hero_video_path" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Künstler</label>
+                        <select id="artists-select" multiple style="height: 150px;">
+                            <!-- Wird von JS befüllt -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Communities</label>
                         <div id="communities-list"></div>
                     </div>
@@ -67,12 +91,20 @@
                         <div id="categories-list"></div>
                     </div>
 
+                    <div class="form-group">
+                        <label>Weitere Termine</label>
+                        <div id="occurrences-list">
+                            <!-- Erste Occurrence wird aus Start/End-Datum erstellt -->
+                        </div>
+                        <button type="button" class="btn-primary" onclick="addOccurrence()" style="background: #27ae60; margin-top: 0.5rem;">+ Weiteren Termin hinzufügen</button>
+                    </div>
+
                     <button type="submit" class="btn-primary">Event erstellen</button>
                 </form>
             </div>
         </main>
     </div>
     <script src="js/sidebar.js"></script>
-    <script src="js/create-event.js"></script>
+    <script src="js/create-event-new.js"></script>
 </body>
 </html>
