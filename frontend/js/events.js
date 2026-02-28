@@ -281,7 +281,7 @@ class EventsManager {
         const categories = event.categories || [];
 
         return `
-            <div class="event-card" onclick="window.open('/frontend/event-detail.html?slug=${event.slug}', '_blank')">
+            <div class="event-card" onclick="openEventModal('${event.slug}')">
                 <div class="event-image">
                     <img src="${imageUrl}" alt="${event.title}" onerror="this.src='/frontend/images/default-event.svg'">
                     ${event.is_promoted ? '<div class="event-promoted">Featured</div>' : ''}
@@ -342,7 +342,7 @@ class EventsManager {
         const imageUrl = event.image_path ? event.image_path : '/frontend/images/default-event.svg';
 
         return `
-            <div class="promoted-card" onclick="window.open('/frontend/event-detail.html?slug=${event.slug}', '_blank')">
+            <div class="promoted-card" onclick="openEventModal('${event.slug}')">
                 <div class="promoted-image">
                     <img src="${imageUrl}" alt="${event.title}" onerror="this.src='/frontend/images/default-event.svg'">
                     <div class="promoted-overlay">

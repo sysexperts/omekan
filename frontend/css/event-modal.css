@@ -1,0 +1,481 @@
+/* Event Modal Styles */
+.event-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+}
+
+.modal-container {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+}
+
+.modal-close {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+.modal-content {
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+/* Event Hero Section */
+.event-hero {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.event-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.event-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+}
+
+.event-hero-content {
+    color: white;
+    width: 100%;
+}
+
+.event-hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.event-hero-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-date-time,
+.event-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.event-date-time svg,
+.event-location svg {
+    opacity: 0.8;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 2rem;
+}
+
+/* Event Actions */
+.event-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background: white;
+    color: #6b7280;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.action-btn:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.action-btn.active {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.favorite-btn.active .heart-icon {
+    fill: currentColor;
+}
+
+/* Event Details */
+.event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.event-description-section h3,
+.event-tags-section h3,
+.event-artists-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+}
+
+.event-description-text {
+    color: #6b7280;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.event-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.event-tag {
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.event-tag.community {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.event-tag.category {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+/* Artists Section */
+.event-artists-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.artist-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.artist-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #1f2937;
+}
+
+.spotify-link {
+    color: #1db954;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.spotify-link:hover {
+    text-decoration: underline;
+}
+
+/* Info Grid */
+.event-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.info-item h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.info-item p {
+    font-size: 1rem;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* CTA Section */
+.event-cta {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cta-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Error State */
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.error-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.error-state p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #4f46e5;
+}
+
+/* Toast Notifications */
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    z-index: 10001;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.toast-notification.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-container {
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        max-height: 95vh;
+    }
+    
+    .event-hero {
+        height: 250px;
+    }
+    
+    .event-hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .event-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        justify-content: center;
+    }
+    
+    .event-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-modal {
+        padding: 0;
+    }
+    
+    .modal-container {
+        border-radius: 0;
+        max-height: 100vh;
+    }
+    
+    .event-hero {
+        height: 200px;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .modal-container,
+    .event-modal,
+    .action-btn,
+    .cta-button,
+    .toast-notification {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .modal-container {
+        border: 2px solid #000;
+    }
+    
+    .action-btn {
+        border-color: #000;
+    }
+    
+    .event-tag {
+        border: 1px solid #000;
+    }
+}
+
+/* Focus Styles */
+.modal-close:focus,
+.action-btn:focus,
+.cta-button:focus,
+.btn-primary:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
