@@ -1,6 +1,8 @@
 const API_BASE_URL = 'http://localhost/api';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (!initAdminSidebar('create-event')) return;
+
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
     if (!user) {
@@ -110,8 +112,4 @@ async function handleSubmit(e) {
         console.error('Error:', error);
         alert('Verbindungsfehler');
     }
-}
-
-function logout() {
-    localStorage.removeItem('user');
 }

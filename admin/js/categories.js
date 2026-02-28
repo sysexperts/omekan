@@ -1,20 +1,7 @@
 const API_BASE_URL = 'http://localhost/api';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    
-    if (!user) {
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    if (user.role !== 'admin') {
-        alert('Nur Admins haben Zugriff auf diesen Bereich');
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    document.getElementById('user-name').textContent = user.name;
+    if (!initAdminSidebar('categories')) return;
     
     await loadCategories();
     
@@ -160,8 +147,4 @@ async function handleSubmit(e) {
 
 function closeModal() {
     document.getElementById('category-modal').style.display = 'none';
-}
-
-function logout() {
-    localStorage.removeItem('user');
 }

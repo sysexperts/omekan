@@ -1,20 +1,7 @@
 const API_BASE_URL = 'http://localhost/api';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    
-    if (!user) {
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    if (user.role !== 'admin') {
-        alert('Nur Admins haben Zugriff auf diesen Bereich');
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    console.log('Admin dashboard loaded for:', user.name);
+    if (!initAdminSidebar('dashboard')) return;
     
     await loadStats();
 });
@@ -38,8 +25,4 @@ async function loadStats() {
         document.getElementById('total-events').textContent = 'Error';
         document.getElementById('pending-reviews').textContent = 'Error';
     }
-}
-
-function logout() {
-    localStorage.removeItem('user');
 }
