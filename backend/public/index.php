@@ -113,6 +113,18 @@ if ($requestMethod === 'DELETE' && preg_match('#^/api/categories/(\d+)$#', $requ
     exit;
 }
 
+if ($requestMethod === 'GET' && $requestUri === '/api/events/list') {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->index();
+    exit;
+}
+
+if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9-]+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->show($matches[1]);
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',

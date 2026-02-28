@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS events (
     affiliate_url VARCHAR(500),
     is_promoted BOOLEAN DEFAULT FALSE,
     hero_video_path VARCHAR(255),
+    image_path VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (organizer_id) REFERENCES organizers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -80,6 +81,8 @@ CREATE TABLE IF NOT EXISTS communities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
+    flag_icon VARCHAR(10),
+    preview_image VARCHAR(255),
     is_active BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
