@@ -78,4 +78,24 @@ class OrganizerRepository
             tokenBalance: (int) $row['token_balance']
         );
     }
+
+    public function findAll(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT id, user_id, display_name, website, is_partner, token_balance 
+             FROM organizers 
+             ORDER BY id DESC'
+        );
+        
+        $rows = $stmt->fetchAll();
+        
+        return array_map(fn($row) => new OrganizerDTO(
+            id: (int) $row['id'],
+            userId: (int) $row['user_id'],
+            displayName: $row['display_name'],
+            website: $row['website'],
+            isPartner: (bool) $row['is_partner'],
+            tokenBalance: (int) $row['token_balance']
+        ), $rows);
+    }
 }

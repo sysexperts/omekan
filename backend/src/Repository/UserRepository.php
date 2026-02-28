@@ -68,4 +68,41 @@ class UserRepository
         
         return (int) $row['count'];
     }
+
+    public function findAll(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC'
+        );
+        
+        $rows = $stmt->fetchAll();
+        
+        return array_map(fn($row) => new UserDTO(
+            id: (int) $row['id'],
+            name: $row['name'],
+            email: $row['email'],
+            role: $row['role']
+        ), $rows);
+    }
+
+    public function findById(int $id): ?UserDTO
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id, name, email, role FROM users WHERE id = ?'
+        );
+        
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+
+        if (!$row) {
+            return null;
+        }
+
+        return new UserDTO(
+            id: (int) $row['id'],
+            name: $row['name'],
+            email: $row['email'],
+            role: $row['role']
+        );
+    }
 }

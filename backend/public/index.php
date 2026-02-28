@@ -47,6 +47,24 @@ if ($requestMethod === 'POST' && $requestUri === '/api/events') {
     exit;
 }
 
+if ($requestMethod === 'GET' && $requestUri === '/api/admin/stats') {
+    $controller = new \Omekan\Controller\AdminController();
+    $controller->getStats();
+    exit;
+}
+
+if ($requestMethod === 'GET' && $requestUri === '/api/admin/users') {
+    $controller = new \Omekan\Controller\AdminController();
+    $controller->getUsers();
+    exit;
+}
+
+if ($requestMethod === 'GET' && $requestUri === '/api/admin/organizers') {
+    $controller = new \Omekan\Controller\AdminController();
+    $controller->getOrganizers();
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',

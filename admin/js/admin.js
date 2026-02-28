@@ -21,14 +21,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadStats() {
     try {
-        const response = await fetch(`${API_BASE_URL}/events`);
+        const response = await fetch(`${API_BASE_URL}/admin/stats`);
         const data = await response.json();
         
         if (data.status === 'success') {
-            document.getElementById('total-events').textContent = data.data.length;
+            const stats = data.data;
+            document.getElementById('total-users').textContent = stats.total_users || 0;
+            document.getElementById('total-organizers').textContent = stats.total_organizers || 0;
+            document.getElementById('total-events').textContent = stats.total_events || 0;
+            document.getElementById('pending-reviews').textContent = 0;
         }
     } catch (error) {
         console.error('Error loading stats:', error);
+        document.getElementById('total-users').textContent = 'Error';
+        document.getElementById('total-organizers').textContent = 'Error';
+        document.getElementById('total-events').textContent = 'Error';
+        document.getElementById('pending-reviews').textContent = 'Error';
     }
 }
 
