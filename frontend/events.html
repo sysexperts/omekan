@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Omekan</title>
+    <link rel="stylesheet" href="css/events.css?v=20260228">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Omekan</h1>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Events</a>
+                <a href="/admin" class="nav-link">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="container">
+                <h1 class="hero-title">Entdecke Events in deiner Community</h1>
+                <p class="hero-subtitle">Finde die besten Konzerte, Festivals und Events in deiner Nähe</p>
+                <div class="hero-search">
+                    <div class="search-container">
+                        <input type="text" id="hero-search" placeholder="Nach Events suchen..." class="search-input">
+                        <button class="search-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promoted Events Slider -->
+    <section class="promoted-section">
+        <div class="container">
+            <h2 class="section-title">Featured Events</h2>
+            <div class="promoted-slider">
+                <div id="promoted-events" class="promoted-grid"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters & Search -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-header">
+                <h2>Alle Events</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button class="view-btn" data-view="list">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">Community</label>
+                    <select id="filter-community" class="filter-select">
+                        <option value="">Alle Communities</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Kategorie</label>
+                    <select id="filter-category" class="filter-select">
+                        <option value="">Alle Kategorien</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Datum</label>
+                    <input type="date" id="filter-date" class="filter-input">
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Sortierung</label>
+                    <select id="sort-events" class="filter-select">
+                        <option value="date">Datum</option>
+                        <option value="title">Titel</option>
+                        <option value="location">Ort</option>
+                    </select>
+                </div>
+                
+                <button class="filter-clear" id="clear-filters">Filter zurücksetzen</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <section class="events-section">
+        <div class="container">
+            <div id="events-grid" class="events-grid"></div>
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Lade Events...</p>
+            </div>
+            <div id="no-events" class="no-events" style="display: none;">
+                <div class="no-events-icon">🎭</div>
+                <h3>Keine Events gefunden</h3>
+                <p>Versuche andere Filter oder erstelle ein neues Event.</p>
+                <a href="/admin/create-event.html" class="btn-primary">Event erstellen</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Load More -->
+    <section class="load-more-section">
+        <div class="container">
+            <button id="load-more" class="btn-load-more" style="display: none;">
+                Mehr Events laden
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Omekan</h3>
+                    <p>Die Event-Plattform für deine Community</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links</h4>
+                    <a href="/">Events</a>
+                    <a href="/admin">Admin</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Kontakt</h4>
+                    <p>info@omekan.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Omekan. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/events.js?v=20260228"></script>
+</body>
+</html>
