@@ -52,9 +52,11 @@ class EventService
             return null;
         }
 
-        if (!isset($data['title']) || !isset($data['start_datetime']) || !isset($data['end_datetime'])) {
+        if (!isset($data['title']) || !isset($data['start_datetime'])) {
             return null;
         }
+
+        $endDatetime = $data['end_datetime'] ?? $data['start_datetime'];
 
         $slug = $this->generateSlug($data['title']);
         
@@ -75,7 +77,7 @@ class EventService
         $this->occurrenceRepository->create(
             $eventId,
             $data['start_datetime'],
-            $data['end_datetime']
+            $endDatetime
         );
 
         if (isset($data['community_ids']) && is_array($data['community_ids'])) {

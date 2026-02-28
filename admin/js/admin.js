@@ -9,10 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (user.role !== 'admin') {
-        alert('Nur Admins haben Zugriff');
+        alert('Nur Admins haben Zugriff auf diesen Bereich');
         window.location.href = 'login.html';
         return;
     }
     
     console.log('Admin dashboard loaded for:', user.name);
 });
+
+function logout() {
+    localStorage.removeItem('user');
+}

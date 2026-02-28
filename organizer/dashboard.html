@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Omekan Veranstalter</title>
+    <link rel="stylesheet" href="css/organizer.css">
+</head>
+<body>
+    <div class="organizer-layout">
+        <aside class="sidebar">
+            <h2>Omekan</h2>
+            <p class="user-info" id="user-name"></p>
+            <nav>
+                <a href="dashboard.html" class="nav-item active">Dashboard</a>
+                <a href="events.html" class="nav-item">Meine Events</a>
+                <a href="create-event.html" class="nav-item">Event erstellen</a>
+                <a href="login.html" class="nav-item" onclick="logout()">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Dashboard</h1>
+            </header>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Meine Events</h3>
+                    <p class="stat-number" id="event-count">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Token-Guthaben</h3>
+                    <p class="stat-number" id="token-balance">0</p>
+                </div>
+            </div>
+
+            <div class="organizer-section">
+                <h2>Willkommen im Veranstalter-Bereich</h2>
+                <p>Hier können Sie Ihre Events verwalten und neue Events erstellen.</p>
+            </div>
+        </main>
+    </div>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

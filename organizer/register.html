@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omekan Admin - Registrierung</title>
-    <link rel="stylesheet" href="css/admin.css">
+    <title>Veranstalter Registrierung - Omekan</title>
+    <link rel="stylesheet" href="css/organizer.css">
 </head>
 <body class="login-page">
     <div class="login-container">
         <div class="login-box">
-            <h1>Omekan Veranstalter-Bereich</h1>
-            <p style="text-align: center; margin-bottom: 1rem; color: #7f8c8d;">
-                Erster User wird automatisch Admin
-            </p>
+            <h1>Veranstalter werden</h1>
             <form id="register-form">
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -24,12 +21,16 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Passwort</label>
-                    <input type="password" id="password" name="password" required minlength="6">
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="website">Website (optional)</label>
+                    <input type="url" id="website" name="website" placeholder="https://...">
                 </div>
                 <button type="submit" class="btn-primary">Registrieren</button>
             </form>
             <p style="text-align: center; margin-top: 1rem;">
-                <a href="login.html">Bereits registriert? Login</a>
+                Bereits registriert? <a href="login.html">Zum Login</a>
             </p>
         </div>
     </div>

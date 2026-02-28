@@ -75,7 +75,7 @@ class AuthController
         echo json_encode([
             'status' => 'success',
             'data' => $user,
-            'message' => $user['role'] === 'admin' ? 'First user created as admin' : 'User registered'
+            'message' => $user['role'] === 'admin' ? 'Erster User als Admin erstellt' : 'Veranstalter registriert'
         ]);
     }
 }

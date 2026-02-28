@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Events - Omekan Veranstalter</title>
+    <link rel="stylesheet" href="css/organizer.css">
+</head>
+<body>
+    <div class="organizer-layout">
+        <aside class="sidebar">
+            <h2>Omekan</h2>
+            <p class="user-info" id="user-name"></p>
+            <nav>
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="events.html" class="nav-item active">Meine Events</a>
+                <a href="create-event.html" class="nav-item">Event erstellen</a>
+                <a href="login.html" class="nav-item" onclick="logout()">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Meine Events</h1>
+                <a href="create-event.html" class="btn-primary">Neues Event</a>
+            </header>
+
+            <div class="organizer-section">
+                <div id="events-list"></div>
+            </div>
+        </main>
+    </div>
+    <script src="js/events.js"></script>
+</body>
+</html>

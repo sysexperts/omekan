@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'login.html';
         return;
     }
+    
+    document.getElementById('user-name').textContent = user.name;
 
     await loadCommunities();
     await loadCategories();
@@ -102,7 +104,7 @@ async function handleSubmit(e) {
         
         if (response.ok) {
             alert('Event erfolgreich erstellt!');
-            window.location.href = 'dashboard.html';
+            window.location.href = 'events.html';
         } else {
             alert(data.message || 'Fehler beim Erstellen des Events');
         }
@@ -110,4 +112,8 @@ async function handleSubmit(e) {
         console.error('Error:', error);
         alert('Verbindungsfehler');
     }
+}
+
+function logout() {
+    localStorage.removeItem('user');
 }
