@@ -21,8 +21,165 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Promoted Checkbox Handler
     document.getElementById('is_promoted').addEventListener('change', (e) => {
         document.getElementById('hero-video-group').style.display = e.target.checked ? 'block' : 'none';
+        updatePreview();
     });
+    
+    // Live-Vorschau Event Listener
+    setupLivePreview();
 });
+
+function setupLivePreview() {
+    // Alle Formular-Felder überwachen
+    const fields = ['title', 'description', 'location_name', 'start_date', 'start_time', 'end_date', 'end_time', 'image_path', 'hero_video_path'];
+    
+    fields.forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        if (element) {
+            element.addEventListener('input', updatePreview);
+            element.addEventListener('change', updatePreview);
+        }
+    });
+    
+    // Checkboxen überwachen
+    document.getElementById('artists-select').addEventListener('change', updatePreview);
+}
+
+function updatePreview() {
+    // Titel
+    const title = document.getElementById('title').value || 'Event-Titel';
+    document.getElementById('preview-title').textContent = title;
+    
+    // Ort
+    const location = document.getElementById('location_name').value || 'Ort';
+    document.getElementById('preview-location').textContent = `📍 ${location}`;
+    
+    // Datum
+    const startDate = document.getElementById('start_date').value;
+    const startTime = document.getElementById('start_time').value;
+    let dateText = '📅 Datum';
+    
+    if (startDate && startTime) {
+        const date = new Date(`${startDate}T${startTime}`);
+        dateText = `📅 ${date.toLocaleDateString('de-DE', { 
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })}`;
+    } else if (startDate) {
+        const date = new Date(startDate);
+        dateText = `📅 ${date.toLocaleDateString('de-DE', { 
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric'
+        })}`;
+    }
+    
+    document.getElementById('preview-date').textContent = dateText;
+    
+    // Beschreibung
+    const description = document.getElementById('description').value;
+    const descEl = document.getElementById('preview-description');
+    if (description) {
+        descEl.textContent = description.substring(0, 150) + (description.length > 150 ? '...' : '');
+        descEl.style.display = 'block';
+    } else {
+        descEl.style.display = 'none';
+    }
+    
+    // Bild/Video
+    const imagePath = document.getElementById('image_path').value;
+    const isPromoted = document.getElementById('is_promoted').checked;
+    const videoPath = document.getElementById('hero_video_path').value;
+    const previewImage = document.getElementById('preview-image');
+    
+    if (isPromoted && videoPath) {
+        previewImage.innerHTML = `<video src="${videoPath}" autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>`;
+    } else if (imagePath) {
+        previewImage.innerHTML = `<img src="${imagePath}" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">`;
+    } else {
+        previewImage.innerHTML = '<span>Kein Bild</span>';
+    }
+    
+    // Tags (Communities, Categories, Artists)
+    updatePreviewTags();
+    
+    // Weitere Termine
+    updatePreviewOccurrences();
+}
+
+function updatePreviewTags() {
+    const tagsContainer = document.getElementById('preview-tags');
+    tagsContainer.innerHTML = '';
+    
+    // Communities
+    const selectedCommunities = Array.from(document.querySelectorAll('input[name="community_ids"]:checked'));
+    selectedCommunities.forEach(cb => {
+        const label = cb.parentElement.textContent.trim();
+        const tag = document.createElement('span');
+        tag.className = 'preview-tag community';
+        tag.textContent = label;
+        tagsContainer.appendChild(tag);
+    });
+    
+    // Categories
+    const selectedCategories = Array.from(document.querySelectorAll('input[name="category_ids"]:checked'));
+    selectedCategories.forEach(cb => {
+        const label = cb.parentElement.textContent.trim();
+        const tag = document.createElement('span');
+        tag.className = 'preview-tag category';
+        tag.textContent = label;
+        tagsContainer.appendChild(tag);
+    });
+    
+    // Artists
+    const selectedArtists = Array.from(document.getElementById('artists-select').selectedOptions);
+    selectedArtists.forEach(option => {
+        const tag = document.createElement('span');
+        tag.className = 'preview-tag artist';
+        tag.textContent = option.textContent;
+        tagsContainer.appendChild(tag);
+    });
+}
+
+function updatePreviewOccurrences() {
+    const occurrencesList = document.getElementById('preview-occurrences-list');
+    const occurrencesContainer = document.getElementById('preview-occurrences');
+    
+    const additionalOccurrences = document.querySelectorAll('.occurrence-item');
+    
+    if (additionalOccurrences.length > 0) {
+        occurrencesContainer.style.display = 'block';
+        occurrencesList.innerHTML = '';
+        
+        additionalOccurrences.forEach((occ, index) => {
+            const startDate = occ.querySelector(`input[name^="occ_start_date"]`).value;
+            const startTime = occ.querySelector(`input[name^="occ_start_time"]`).value;
+            
+            if (startDate && startTime) {
+                const date = new Date(`${startDate}T${startTime}`);
+                const dateText = date.toLocaleDateString('de-DE', { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const occDiv = document.createElement('div');
+                occDiv.className = 'preview-occurrence';
+                occDiv.textContent = `📅 ${dateText}`;
+                occurrencesList.appendChild(occDiv);
+            }
+        });
+    } else {
+        occurrencesContainer.style.display = 'none';
+    }
+}
 
 async function loadArtists() {
     try {
@@ -54,12 +211,12 @@ async function loadCommunities() {
         if (data.status === 'success' && data.data) {
             data.data.forEach(community => {
                 const label = document.createElement('label');
-                label.style.display = 'block';
-                label.style.marginBottom = '0.5rem';
                 label.innerHTML = `
                     <input type="checkbox" name="community_ids" value="${community.id}">
                     ${community.name}
                 `;
+                const checkbox = label.querySelector('input');
+                checkbox.addEventListener('change', updatePreview);
                 communitiesDiv.appendChild(label);
             });
         }
@@ -78,12 +235,12 @@ async function loadCategories() {
         if (data.status === 'success' && data.data) {
             data.data.forEach(category => {
                 const label = document.createElement('label');
-                label.style.display = 'block';
-                label.style.marginBottom = '0.5rem';
                 label.innerHTML = `
                     <input type="checkbox" name="category_ids" value="${category.id}">
                     ${category.name}
                 `;
+                const checkbox = label.querySelector('input');
+                checkbox.addEventListener('change', updatePreview);
                 categoriesDiv.appendChild(label);
             });
         }
@@ -98,10 +255,6 @@ function addOccurrence() {
     
     const occurrenceDiv = document.createElement('div');
     occurrenceDiv.className = 'occurrence-item';
-    occurrenceDiv.style.border = '1px solid #ddd';
-    occurrenceDiv.style.padding = '1rem';
-    occurrenceDiv.style.marginBottom = '1rem';
-    occurrenceDiv.style.borderRadius = '4px';
     occurrenceDiv.id = `occurrence-${occurrenceCounter}`;
     
     occurrenceDiv.innerHTML = `
@@ -124,16 +277,25 @@ function addOccurrence() {
                 <input type="time" name="occ_end_time_${occurrenceCounter}">
             </div>
         </div>
-        <button type="button" onclick="removeOccurrence(${occurrenceCounter})" style="margin-top: 0.5rem; background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Termin entfernen</button>
+        <button type="button" onclick="removeOccurrence(${occurrenceCounter})" class="btn-remove-occurrence">Termin entfernen</button>
     `;
     
+    // Event Listener für Vorschau
+    const inputs = occurrenceDiv.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', updatePreview);
+        input.addEventListener('change', updatePreview);
+    });
+    
     occurrencesList.appendChild(occurrenceDiv);
+    updatePreview();
 }
 
 function removeOccurrence(id) {
     const occurrenceDiv = document.getElementById(`occurrence-${id}`);
     if (occurrenceDiv) {
         occurrenceDiv.remove();
+        updatePreview();
     }
 }
 
