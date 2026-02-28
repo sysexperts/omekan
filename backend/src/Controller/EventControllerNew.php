@@ -57,7 +57,23 @@ class EventControllerNew
 
     public function create(): void
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        header('Content-Type: application/json');
+        
+        $rawInput = file_get_contents('php://input');
+        $data = json_decode($rawInput, true);
+        
+        if ($data === null) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid JSON data',
+                'debug' => [
+                    'json_error' => json_last_error_msg(),
+                    'raw_input_length' => strlen($rawInput)
+                ]
+            ]);
+            return;
+        }
         
         $event = $this->eventService->createEvent($data);
         
@@ -65,7 +81,7 @@ class EventControllerNew
             http_response_code(400);
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Invalid event data'
+                'message' => 'Invalid event data - missing required fields'
             ]);
             return;
         }

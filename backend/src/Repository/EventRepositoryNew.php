@@ -178,7 +178,7 @@ class EventRepositoryNew
              VALUES (?, ?, ?, ?, ?, ?)'
         );
         
-        $stmt->execute([$organizerId, $slug, $affiliateUrl, $isPromoted, $heroVideoPath, $imagePath]);
+        $stmt->execute([$organizerId, $slug, $affiliateUrl, $isPromoted ? 1 : 0, $heroVideoPath, $imagePath]);
         
         return (int) $this->db->lastInsertId();
     }
