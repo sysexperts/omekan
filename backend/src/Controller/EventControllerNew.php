@@ -55,6 +55,28 @@ class EventControllerNew
         ]);
     }
 
+    public function showById(int $id): void
+    {
+        $language = $_GET['language'] ?? 'de';
+        
+        $event = $this->eventService->getEventById($id, $language);
+        
+        if ($event === null) {
+            http_response_code(404);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Event not found'
+            ]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'status' => 'success',
+            'data' => $event
+        ]);
+    }
+
     public function create(): void
     {
         header('Content-Type: application/json');

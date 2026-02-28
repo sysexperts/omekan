@@ -171,6 +171,95 @@ class EventRepositoryNew
         return $stmt->fetchAll();
     }
 
+    public function findByIdForDetail(int $id, string $language = 'de'): ?array
+    {
+        // Erst Event-Basis-Daten laden
+        $stmt = $this->db->prepare(
+            'SELECT 
+                id,
+                organizer_id,
+                slug,
+                affiliate_url,
+                is_promoted,
+                hero_video_path,
+                image_path,
+                created_at
+             FROM events 
+             WHERE id = ?'
+        );
+        
+        $stmt->execute([$id]);
+        $eventData = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$eventData) {
+            return null;
+        }
+        
+        // Übersetzung laden (falls vorhanden)
+        $stmt = $this->db->prepare(
+            'SELECT title, description, location_name 
+             FROM event_translations 
+             WHERE event_id = ? AND language = ?'
+        );
+        $stmt->execute([$id, $language]);
+        $translation = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        // Übersetzung zu Event-Daten hinzufügen
+        if ($translation) {
+            $eventData['title'] = $translation['title'];
+            $eventData['description'] = $translation['description'];
+            $eventData['location_name'] = $translation['location_name'];
+        } else {
+            // Fallback wenn keine Übersetzung vorhanden
+            $eventData['title'] = $eventData['slug'];
+            $eventData['description'] = null;
+            $eventData['location_name'] = null;
+        }
+        
+        // Communities laden
+        $stmt = $this->db->prepare(
+            'SELECT c.id, c.name, c.slug 
+             FROM communities c
+             INNER JOIN event_communities ec ON c.id = ec.community_id
+             WHERE ec.event_id = ?'
+        );
+        $stmt->execute([$id]);
+        $eventData['communities'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // Categories laden
+        $stmt = $this->db->prepare(
+            'SELECT c.id, c.name, c.slug 
+             FROM categories c
+             INNER JOIN event_categories ec ON c.id = ec.category_id
+             WHERE ec.event_id = ?'
+        );
+        $stmt->execute([$id]);
+        $eventData['categories'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // Artists laden
+        $stmt = $this->db->prepare(
+            'SELECT a.id, a.name, a.spotify_id, a.image_path 
+             FROM artists a
+             INNER JOIN event_artists ea ON a.id = ea.artist_id
+             WHERE ea.event_id = ?'
+        );
+        $stmt->execute([$id]);
+        $eventData['artists'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // Occurrences laden
+        $stmt = $this->db->prepare(
+            'SELECT id, start_datetime, end_datetime, is_cancelled 
+             FROM event_occurrences 
+             WHERE event_id = ? 
+             ORDER BY start_datetime ASC'
+        );
+        $stmt->execute([$id]);
+        $eventData['occurrences'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // Direkt Array zurückgeben
+        return $eventData;
+    }
+
     public function create(int $organizerId, string $slug, ?string $affiliateUrl, bool $isPromoted, ?string $heroVideoPath, ?string $imagePath): int
     {
         $stmt = $this->db->prepare(

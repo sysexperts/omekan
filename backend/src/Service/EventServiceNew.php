@@ -27,6 +27,11 @@ class EventServiceNew
         return $event?->toArray();
     }
 
+    public function getEventById(int $id, string $language = 'de'): ?array
+    {
+        return $this->eventRepository->findByIdForDetail($id, $language);
+    }
+
     public function createEvent(array $data): ?array
     {
         if (!isset($data['slug'], $data['title'], $data['location_name'])) {

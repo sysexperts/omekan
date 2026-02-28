@@ -39,6 +39,61 @@ if ($requestMethod === 'GET' && $requestUri === '/api/events') {
     exit;
 }
 
+// Event by ID (GET /api/events/{id})
+if ($requestMethod === 'GET' && preg_match('#^/api/events/(\d+)$#', $requestUri, $matches)) {
+    $eventId = (int)$matches[1];
+    $language = $_GET['language'] ?? 'de';
+    
+    $db = \Omekan\Database\Connection::getInstance();
+    
+    // Event-Basis-Daten laden
+    $stmt = $db->prepare('SELECT * FROM events WHERE id = ?');
+    $stmt->execute([$eventId]);
+    $event = $stmt->fetch(\PDO::FETCH_ASSOC);
+    
+    if (!$event) {
+        http_response_code(404);
+        echo json_encode(['status' => 'error', 'message' => 'Event not found']);
+        exit;
+    }
+    
+    // Übersetzung laden
+    $stmt = $db->prepare('SELECT title, description, location_name FROM event_translations WHERE event_id = ? AND language = ?');
+    $stmt->execute([$eventId, $language]);
+    $translation = $stmt->fetch(\PDO::FETCH_ASSOC);
+    
+    if ($translation) {
+        $event['title'] = $translation['title'];
+        $event['description'] = $translation['description'];
+        $event['location_name'] = $translation['location_name'];
+    } else {
+        $event['title'] = $event['slug'];
+        $event['description'] = null;
+        $event['location_name'] = null;
+    }
+    
+    // Communities, Categories, Artists, Occurrences laden
+    $stmt = $db->prepare('SELECT c.id, c.name, c.slug FROM communities c INNER JOIN event_communities ec ON c.id = ec.community_id WHERE ec.event_id = ?');
+    $stmt->execute([$eventId]);
+    $event['communities'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+    $stmt = $db->prepare('SELECT c.id, c.name, c.slug FROM categories c INNER JOIN event_categories ec ON c.id = ec.category_id WHERE ec.event_id = ?');
+    $stmt->execute([$eventId]);
+    $event['categories'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+    $stmt = $db->prepare('SELECT a.id, a.name, a.spotify_id, a.image_path FROM artists a INNER JOIN event_artists ea ON a.id = ea.artist_id WHERE ea.event_id = ?');
+    $stmt->execute([$eventId]);
+    $event['artists'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+    $stmt = $db->prepare('SELECT id, start_datetime, end_datetime, is_cancelled FROM event_occurrences WHERE event_id = ? ORDER BY start_datetime ASC');
+    $stmt->execute([$eventId]);
+    $event['occurrences'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+    http_response_code(200);
+    echo json_encode(['status' => 'success', 'data' => $event]);
+    exit;
+}
+
 // Event Update (PUT /api/events/{id})
 if ($requestMethod === 'PUT' && preg_match('#^/api/events/(\d+)$#', $requestUri, $matches)) {
     $controller = new \Omekan\Controller\EventControllerNew();
