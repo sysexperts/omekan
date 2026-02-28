@@ -89,6 +89,30 @@ if ($requestMethod === 'DELETE' && preg_match('#^/api/communities/(\d+)$#', $req
     exit;
 }
 
+if ($requestMethod === 'GET' && $requestUri === '/api/categories') {
+    $controller = new \Omekan\Controller\CategoryController();
+    $controller->index();
+    exit;
+}
+
+if ($requestMethod === 'POST' && $requestUri === '/api/categories') {
+    $controller = new \Omekan\Controller\CategoryController();
+    $controller->create();
+    exit;
+}
+
+if ($requestMethod === 'PUT' && preg_match('#^/api/categories/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\CategoryController();
+    $controller->update((int) $matches[1]);
+    exit;
+}
+
+if ($requestMethod === 'DELETE' && preg_match('#^/api/categories/(\d+)$#', $requestUri, $matches)) {
+    $controller = new \Omekan\Controller\CategoryController();
+    $controller->delete((int) $matches[1]);
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     'status' => 'error',
