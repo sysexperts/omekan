@@ -423,13 +423,21 @@ async function handleSubmit(e) {
         const data = await response.json();
         
         if (response.ok) {
-            alert('Event erfolgreich erstellt!');
-            window.location.href = 'events.html';
+            alert('✅ Event erfolgreich erstellt!\n\nDas Event ist jetzt auf dem Frontend sichtbar.');
+            // Formular zurücksetzen
+            document.getElementById('event-form').reset();
+            // Vorschau zurücksetzen
+            document.getElementById('preview-image').innerHTML = '<span>Kein Bild</span>';
+            document.getElementById('preview-title').textContent = 'Event-Titel';
+            document.getElementById('preview-location').textContent = '📍 Ort';
+            document.getElementById('preview-date').textContent = '📅 Datum';
+            document.getElementById('preview-tags').innerHTML = '';
+            document.getElementById('preview-description').style.display = 'none';
         } else {
-            alert(data.message || 'Fehler beim Erstellen des Events');
+            alert('❌ Fehler beim Erstellen des Events:\n' + (data.message || 'Unbekannter Fehler'));
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Verbindungsfehler: ' + error.message);
+        alert('❌ Verbindungsfehler:\n' + error.message);
     }
 }
