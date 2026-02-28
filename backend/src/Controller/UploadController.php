@@ -10,10 +10,11 @@ class UploadController
 
     public function __construct()
     {
-        $this->uploadDir = __DIR__ . '/../../../uploads/events/';
+        // Docker-Container-Pfad verwenden
+        $this->uploadDir = '/var/www/uploads/events/';
         
         if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0755, true);
+            mkdir($this->uploadDir, 0777, true);
         }
     }
 
@@ -21,14 +22,24 @@ class UploadController
     {
         header('Content-Type: application/json');
 
-        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-            http_response_code(400);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'No file uploaded or upload error'
-            ]);
-            return;
-        }
+        try {
+            if (!isset($_FILES['image'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'No file uploaded'
+                ]);
+                return;
+            }
+
+            if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                http_response_code(400);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Upload error: ' . $_FILES['image']['error']
+                ]);
+                return;
+            }
 
         $file = $_FILES['image'];
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -76,5 +87,13 @@ class UploadController
             ],
             'message' => 'File uploaded successfully'
         ]);
+        
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Server error: ' . $e->getMessage()
+            ]);
+        }
     }
 }

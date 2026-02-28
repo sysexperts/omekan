@@ -8,6 +8,8 @@ services:
     container_name: omekan-nginx
     ports:
       - "80:80"
+    volumes:
+      - ./uploads:/var/www/uploads
     depends_on:
       - php
     networks:
@@ -23,6 +25,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
+    volumes:
+      - ./uploads:/var/www/uploads
     depends_on:
       - mysql
     networks:
