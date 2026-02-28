@@ -17,19 +17,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
+error_log("Request: $requestMethod $requestUri");
+
+// Event-spezifische Endpoints MÜSSEN vor dem Regex-Pattern kommen
 if ($requestMethod === 'GET' && $requestUri === '/api/events/list') {
+    error_log("Matched /api/events/list - calling EventControllerNew::index()");
     $controller = new \Omekan\Controller\EventControllerNew();
     $controller->index();
     exit;
 }
 
+if ($requestMethod === 'POST' && $requestUri === '/api/events/create') {
+    $controller = new \Omekan\Controller\EventControllerNew();
+    $controller->create();
+    exit;
+}
+
 if ($requestMethod === 'GET' && $requestUri === '/api/events') {
-    $controller = new \Omekan\Controller\EventController();
+    $controller = new \Omekan\Controller\EventListController();
     $controller->index();
     exit;
 }
 
-if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $requestUri, $matches) && $matches[1] !== 'list' && $matches[1] !== 'create') {
+// Event-Detail-Route (Slug) - MUSS nach allen spezifischen /api/events/* Routes kommen
+if ($requestMethod === 'GET' && preg_match('#^/api/events/([a-z0-9\-]+)$#', $requestUri, $matches)) {
+    error_log("Matched event slug pattern: " . $matches[1]);
     $controller = new \Omekan\Controller\EventControllerNew();
     $controller->show($matches[1]);
     exit;
@@ -116,12 +128,6 @@ if ($requestMethod === 'PUT' && preg_match('#^/api/categories/(\d+)$#', $request
 if ($requestMethod === 'DELETE' && preg_match('#^/api/categories/(\d+)$#', $requestUri, $matches)) {
     $controller = new \Omekan\Controller\CategoryController();
     $controller->delete((int) $matches[1]);
-    exit;
-}
-
-if ($requestMethod === 'POST' && $requestUri === '/api/events/create') {
-    $controller = new \Omekan\Controller\EventControllerNew();
-    $controller->create();
     exit;
 }
 

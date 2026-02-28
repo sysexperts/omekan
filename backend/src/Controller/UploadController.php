@@ -53,12 +53,12 @@ class UploadController
             return;
         }
 
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        $maxSize = 10 * 1024 * 1024; // 10MB
         if ($file['size'] > $maxSize) {
             http_response_code(400);
             echo json_encode([
                 'status' => 'error',
-                'message' => 'File too large. Max 5MB allowed'
+                'message' => 'File too large. Max 10MB allowed'
             ]);
             return;
         }

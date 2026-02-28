@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadEvents() {
     try {
-        const response = await fetch(`${API_BASE_URL}/events/list`);
+        const response = await fetch(`${API_BASE_URL}/events`);
         const data = await response.json();
         
         if (data.status === 'success' && data.data.length > 0) {

@@ -17,9 +17,12 @@ class EventControllerNew
 
     public function index(): void
     {
+        error_log("EventControllerNew::index() called");
         $language = $_GET['language'] ?? 'de';
         
         $events = $this->eventService->getAllEvents($language);
+        
+        error_log("Events found: " . count($events));
         
         http_response_code(200);
         echo json_encode([
@@ -30,11 +33,13 @@ class EventControllerNew
 
     public function show(string $slug): void
     {
+        error_log("EventControllerNew::show() called with slug: " . $slug);
         $language = $_GET['language'] ?? 'de';
         
         $event = $this->eventService->getEventBySlug($slug, $language);
         
         if ($event === null) {
+            error_log("Event not found for slug: " . $slug);
             http_response_code(404);
             echo json_encode([
                 'status' => 'error',
