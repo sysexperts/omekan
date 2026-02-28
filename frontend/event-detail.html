@@ -4,26 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Details - Omekan</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20260228">
+    <link rel="stylesheet" href="css/event-detail.css?v=20260228">
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Omekan</h1>
             <nav>
-                <a href="index.html">← Zurück zu Events</a>
+                <a href="index.html" class="back-link">← Zurück zu Events</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <section id="event-detail" class="event-detail">
+        <!-- Hero Section -->
+        <div id="event-hero" class="event-hero">
+            <div id="hero-media"></div>
+            <div class="hero-overlay"></div>
+        </div>
+
+        <!-- Event Content -->
+        <div class="event-detail-container">
             <div class="container">
-                <div id="event-content">
-                    <p>Lade Event-Details...</p>
+                <div class="event-detail-grid">
+                    <!-- Main Content -->
+                    <div class="event-main-content">
+                        <div id="event-content">
+                            <p>Lade Event-Details...</p>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <aside class="event-sidebar">
+                        <div id="event-sidebar-content"></div>
+                    </aside>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer>
@@ -32,6 +50,6 @@
         </div>
     </footer>
 
-    <script src="js/event-detail.js"></script>
+    <script src="js/event-detail.js?v=20260228"></script>
 </body>
 </html>
