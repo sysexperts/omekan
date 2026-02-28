@@ -420,6 +420,15 @@ async function handleSubmit(e) {
             body: JSON.stringify(eventData)
         });
         
+        // Prüfen ob Response JSON ist
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Server returned non-JSON response:', text);
+            alert('❌ Server-Fehler: Keine JSON-Antwort erhalten.\nBitte Browser-Konsole prüfen.');
+            return;
+        }
+        
         const data = await response.json();
         
         if (response.ok) {
@@ -438,6 +447,6 @@ async function handleSubmit(e) {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('❌ Verbindungsfehler:\n' + error.message);
+        alert('❌ Verbindungsfehler:\n' + error.message + '\n\nBitte Browser-Konsole prüfen.');
     }
 }
